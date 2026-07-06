@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { Link } from "react-router-dom";
 
 function Issues() {
   const [issues, setIssues] = useState([]);
@@ -36,14 +37,21 @@ function Issues() {
         <p>No issues found</p>
       ) : (
         issues.map((issue) => (
-          <div
-            key={issue._id}
+          <Link
+            to={`/issues/${issue._id}`}
             style={{
-              border: "1px solid black",
-              padding: "10px",
-              marginBottom: "10px",
+              textDecoration: "none",
+              color: "inherit",
             }}
           >
+            <div
+              style={{
+                border: "1px solid black",
+                padding: "10px",
+                marginBottom: "10px",
+                cursor: "pointer",
+              }}
+            >
             <h3>{issue.issueNumber}</h3>
 
             <p>
@@ -60,7 +68,8 @@ function Issues() {
               <strong>Status:</strong>{" "}
               {issue.status}
             </p>
-          </div>
+            </div>
+          </Link>
         ))
       )}
     </div>

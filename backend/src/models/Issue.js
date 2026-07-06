@@ -82,17 +82,21 @@ const issueSchema = new mongoose.Schema(
     default: null,
     },
 
-    status: {
-    type: String,
-    enum: [
-        "Pending",
-        "Accepted",
-        "In Progress",
-        "Resolved",
-        "Rejected",
-    ],
+    // status: {
+    // type: String,
+    // enum: [
+    //     "Pending",
+    //     "Accepted",
+    //     "In Progress",
+    //     "Resolved",
+    //     "Rejected",
+    // ],
 
-    default: "Pending",
+    // default: "Pending",
+    // },
+
+    status: {
+
     },
 
     priority: {

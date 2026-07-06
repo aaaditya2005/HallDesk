@@ -142,11 +142,39 @@ export const getMyIssues = async (req, res) => {
 
 export const getIssueById = async (req, res) => {
   try {
-    const issue = await Issue.findById(req.params.id)
-      .populate("reportedBy", "name rollNo registrationNo")
-      .populate("hallId", "hallName hallNumber")
-      .populate("roomId", "roomNumber floor block")
-      .populate("assignedTo", "name");
+
+    const issue =
+      await Issue.findById(req.params.id)
+
+        .populate(
+          "reportedBy",
+          "name registrationNo rollNo"
+        )
+
+        .populate(
+          "hallId",
+          "hallName hallNumber"
+        )
+
+        .populate(
+          "roomId",
+          "roomNumber floor block"
+        )
+
+        .populate(
+          "assignedTo",
+          "name"
+        )
+
+        .populate(
+          "timeline.by",
+          "name role"
+        )
+
+        .populate(
+          "resolvedBy",
+          "name"
+        );
 
     if (!issue) {
       return res.status(404).json({
@@ -159,13 +187,16 @@ export const getIssueById = async (req, res) => {
       success: true,
       issue,
     });
+
   } catch (error) {
+
     console.error(error);
 
     res.status(500).json({
       success: false,
       message: "Server Error",
     });
+
   }
 };
 
