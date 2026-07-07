@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function CreateIssue() {
+
   const navigate = useNavigate();
 
   const [title, setTitle] =
@@ -14,50 +15,95 @@ function CreateIssue() {
   const [category, setCategory] =
     useState("Water");
 
+  const [attachments, setAttachments] =
+    useState([]);
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const token =
         localStorage.getItem("token");
 
+      const formData =
+        new FormData();
+
+      formData.append(
+        "title",
+        title
+      );
+
+      formData.append(
+        "description",
+        description
+      );
+
+      formData.append(
+        "category",
+        category
+      );
+
+      for (
+        let i = 0;
+        i < attachments.length;
+        i++
+      ) {
+        formData.append(
+          "attachments",
+          attachments[i]
+        );
+      }
+
       await api.post(
         "/issues",
-        {
-          title,
-          description,
-          category,
-        },
+        formData,
         {
           headers: {
             Authorization:
               `Bearer ${token}`,
+            "Content-Type":
+              "multipart/form-data",
           },
         }
       );
 
-      alert("Issue Created");
+      alert("Issue Created Successfully");
 
       navigate("/issues");
 
     } catch (error) {
+
       console.error(error);
 
-      alert("Failed to create issue");
+      alert(
+        "Failed to create issue"
+      );
+
     }
+
   };
 
   return (
     <div>
-      <h1>Raise New Issue</h1>
 
-      <form onSubmit={handleSubmit}>
+      <h1>
+        Raise New Issue
+      </h1>
+
+      <form
+        onSubmit={handleSubmit}
+      >
+
         <input
           type="text"
           placeholder="Issue Title"
           value={title}
           onChange={(e) =>
-            setTitle(e.target.value)
+            setTitle(
+              e.target.value
+            )
           }
           required
         />
@@ -87,6 +133,7 @@ function CreateIssue() {
             )
           }
         >
+
           <option value="Electrical">
             Electrical
           </option>
@@ -118,15 +165,42 @@ function CreateIssue() {
           <option value="Other">
             Other
           </option>
+
         </select>
 
         <br />
         <br />
 
-        <button type="submit">
+        <label>
+
+          Upload Images / Videos
+
+        </label>
+
+        <br />
+
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*"
+          onChange={(e) =>
+            setAttachments(
+              e.target.files
+            )
+          }
+        />
+
+        <br />
+        <br />
+
+        <button
+          type="submit"
+        >
           Submit Issue
         </button>
+
       </form>
+
     </div>
   );
 }

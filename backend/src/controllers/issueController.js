@@ -7,74 +7,92 @@ export const createIssue = async (req, res) => {
       title,
       description,
       category,
-      attachments,
     } = req.body;
 
+    // Create Issue Number
     const today = new Date();
 
-const datePart =
-  `${today.getFullYear()}${String(
-    today.getMonth() + 1
-  ).padStart(2, "0")}${String(
-    today.getDate()
-  ).padStart(2, "0")}`;
+    const datePart =
+      `${today.getFullYear()}${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}${String(
+        today.getDate()
+      ).padStart(2, "0")}`;
 
-const startOfDay = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate()
-);
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
 
-const endOfDay = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate() + 1
-);
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
 
-const todayCount =
-  await Issue.countDocuments({
-    createdAt: {
-      $gte: startOfDay,
-      $lt: endOfDay,
-    },
-  });
-
-const issueNumber =
-  `ISSUE-${datePart}-${String(
-    todayCount + 1
-  ).padStart(3, "0")}`;
-
-    const issue = await Issue.create({
-      issueNumber,
-
-      title,
-      description,
-      category,
-
-      attachments:
-        attachments || [],
-
-      reportedBy:
-        req.user._id,
-
-      hallId:
-        req.user.hallId,
-
-      roomId:
-        req.user.roomId,
-
-      status: "Pending",
-
-      priority: "Medium",
-
-      timeline: [
-        {
-          action: "Created",
-          remark: "Issue reported",
-          by: req.user._id,
+    const todayCount =
+      await Issue.countDocuments({
+        createdAt: {
+          $gte: startOfDay,
+          $lt: endOfDay,
         },
-      ],
-    });
+      });
+
+    const issueNumber =
+      `ISSUE-${datePart}-${String(
+        todayCount + 1
+      ).padStart(3, "0")}`;
+
+    // Uploaded files
+    const attachments =
+      req.files
+        ? req.files.map(
+            (file) =>
+              file.filename
+          )
+        : [];
+
+    const issue =
+      await Issue.create({
+
+        issueNumber,
+
+        title,
+        description,
+        category,
+
+        attachments,
+
+        reportedBy:
+          req.user._id,
+
+        hallId:
+          req.user.hallId,
+
+        roomId:
+          req.user.roomId,
+
+        status:
+          "Pending",
+
+        priority:
+          "Medium",
+
+        timeline: [
+          {
+            action:
+              "Created",
+
+            remark:
+              "Issue reported",
+
+            by:
+              req.user._id,
+          },
+        ],
+
+      });
 
     res.status(201).json({
       success: true,
@@ -82,12 +100,15 @@ const issueNumber =
     });
 
   } catch (error) {
+
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message:
+        "Server Error",
     });
+
   }
 };
 

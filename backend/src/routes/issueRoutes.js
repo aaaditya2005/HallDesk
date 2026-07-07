@@ -1,6 +1,7 @@
 import express from "express";
 import protect from "../middleware/authMiddleware.js";
 import authorizeRoles from "../middleware/roleMiddleware.js";
+import upload from "../config/multer.js";
 
 import {
   createIssue,
@@ -13,9 +14,11 @@ import {
 
 const router = express.Router();
 
-router.post("/",
+router.post(
+  "/",
   protect,
   authorizeRoles("student"),
+  upload.array("attachments", 5),
   createIssue
 );
 

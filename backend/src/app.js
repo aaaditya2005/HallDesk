@@ -4,11 +4,18 @@ import hallRoutes from "./routes/hallRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import issueRoutes from "./routes/issueRoutes.js";
+import path from "path";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(
+  "/uploads",
+  express.static(
+    path.join(process.cwd(), "uploads")
+  )
+);
 app.get("/", (req, res) => {
   res.send("HallDesk API Running...");
 });
