@@ -62,7 +62,6 @@ const userSchema = new mongoose.Schema(
     type: String,
     trim: true,
     uppercase: true,
-    default: null,
     },
 
    registrationNo: {
@@ -71,7 +70,6 @@ const userSchema = new mongoose.Schema(
     sparse: true,
     trim: true,
     uppercase: true,
-    default: null,
     },
 
     department: {

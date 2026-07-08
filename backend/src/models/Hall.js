@@ -14,10 +14,10 @@ const hallSchema = new mongoose.Schema(
     trim: true,
     },
 
-    hostelType: {
-    type: String,
-    enum: ["Boys", "Girls"],
-    required: true,
+    gender: {
+      type: String,
+      enum: ["Male", "Female"],
+      required: true,
     },
 
     totalFloors: {
@@ -26,17 +26,32 @@ const hallSchema = new mongoose.Schema(
     min: 1,
     },
 
-    blocks: [
+  blocks: [
     {
-        type: [String],
-        trim: true,
+      type: String,
+      trim: true,
     },
-    ],
+  ],
 
     capacity: {
     type: Number,
     required: true,
     min: 1,
+    },
+
+    occupiedRooms: {
+      type: Number,
+      default: 0,
+    },
+
+    availableRooms: {
+      type: Number,
+      default: 0,
+    },
+
+    description: {
+      type: String,
+      default: "",
     },
 
     wardenIds: [
