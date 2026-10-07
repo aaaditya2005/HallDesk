@@ -1,0 +1,213 @@
+/* ==========================================
+   HallDesk Global Styles
+========================================== */
+
+:root {
+
+  --primary-color: #003366;
+  --secondary-color: #005792;
+
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+
+  --background-color: #f5f6fa;
+
+  --white: #ffffff;
+
+  --border-color: #d6d6d6;
+
+  --text-color: #212529;
+
+}
+
+
+/* ==========================================
+   Body
+========================================== */
+
+body {
+
+  margin: 0;
+
+  padding: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: var(--background-color);
+
+  color: var(--text-color);
+
+}
+
+
+/* ==========================================
+   Links
+========================================== */
+
+a {
+
+  text-decoration: none;
+
+  color: inherit;
+
+}
+
+
+/* ==========================================
+   Bootstrap Overrides
+========================================== */
+
+.btn {
+
+  border-radius: 2px;
+
+}
+
+.sidebar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #102A43;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  transition: background 0.25s ease;
+}
+
+.sidebar-button:hover,
+.sidebar-button:focus {
+  background: #243b53;
+  color: #ffffff;
+}
+
+.option-row {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.option-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+}
+
+.option-vote {
+  background: #ffffff;
+  color: #102A43;
+  border: 1px solid rgba(16, 42, 67, 0.15);
+}
+
+.option-vote:hover,
+.option-vote:focus {
+  background: #f8f9fa;
+  border-color: #102A43;
+  color: #102A43;
+}
+
+.bg-navbar {
+  background-color: #102A43 !important;
+}
+
+.option-result {
+  background: #f8f9fa;
+}
+
+.theme-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--success-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  transition: background 0.25s ease;
+}
+
+.theme-button:hover,
+.theme-button:focus {
+  background: #157347;
+  color: #ffffff;
+}
+
+.card {
+
+  border-radius: 2px;
+
+  border: 1px solid var(--border-color);
+
+}
+
+.form-control,
+.form-select {
+
+  border-radius: 2px;
+
+}
+
+.table {
+
+  background: white;
+
+}
+
+
+/* ==========================================
+   Headings
+========================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+
+  font-weight: 600;
+
+}
+
+
+/* ==========================================
+   Utility Classes
+========================================== */
+
+.page-title {
+
+  margin-bottom: 20px;
+
+}
+
+.section-box {
+
+  background: white;
+
+  border: 1px solid var(--border-color);
+
+  padding: 20px;
+
+}
+
+.pointer {
+
+  cursor: pointer;
+
+}
+
+.text-primary-custom {
+
+  color: var(--primary-color);
+
+}
+
+.bg-primary-custom {
+
+  background: var(--primary-color);
+
+}

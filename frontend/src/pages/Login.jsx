@@ -1,6 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import {
+  Form,
+  Button,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
+
 import api from "../services/api";
+import AuthLayout from "../layouts/AuthLayout";
+import notify from "../utils/toast";
+
+import "./Login.css";
 
 function Login() {
 
@@ -12,8 +24,17 @@ function Login() {
   const [password, setPassword] =
     useState("");
 
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
+
   const handleLogin = async (e) => {
+
     e.preventDefault();
+
+    setLoading(true);
 
     try {
 
@@ -30,75 +51,200 @@ function Login() {
         res.data.token
       );
 
-      const role =
-        res.data.user.role;
+      localStorage.setItem(
+        "user",
+        JSON.stringify(
+          res.data.user
+        )
+      );
 
-      if (role === "student") {
-        navigate("/dashboard");
-      }
-      else if (
-        role === "warden"
-      ) {
-        navigate(
-          "/warden-dashboard"
-        );
-      }
-      else if (
-        role === "admin"
-      ) {
-        navigate(
-          "/admin-dashboard"
-        );
+      const role = res.data.user.role;
+
+      switch (role) {
+
+        case "student":
+
+          navigate("/student/dashboard");
+          break;
+
+        case "warden":
+
+          navigate("/warden/dashboard");
+          break;
+
+        case "mess_manager":
+
+          navigate("/mess/dashboard");
+          break;
+
+        case "admin":
+
+          navigate("/admin/dashboard");
+          break;
+
+        default:
+
+          navigate("/");
+
       }
 
-    } catch (error) {
-      alert("Login Failed");
     }
+
+    catch (error) {
+
+      notify.error(
+        error.response?.data?.message ||
+        "Login Failed"
+      );
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
   };
 
   return (
-    <div>
 
-      <h1>HallDesk Login</h1>
+    <AuthLayout>
 
-      <form onSubmit={handleLogin}>
+      <div className="login-heading">
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) =>
-            setUsername(
-              e.target.value
-            )
-          }
-        />
+        <h4>
+          Sign In
+        </h4>
 
-        <br />
-        <br />
+        <p>
+          Using your HallDesk credentials.
+        </p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(
-              e.target.value
-            )
-          }
-        />
+      </div>
 
-        <br />
-        <br />
+      <Form
+        onSubmit={handleLogin}
+      >
 
-        <button type="submit">
-          Login
-        </button>
+        <Form.Group className="mb-3">
 
-      </form>
+          <Form.Label>
 
-    </div>
+            Username
+
+          </Form.Label>
+
+          <Form.Control
+            type="text"
+            placeholder="Enter Username"
+            value={username}
+            onChange={(e) =>
+              setUsername(
+                e.target.value
+              )
+            }
+            required
+          />
+
+        </Form.Group>
+
+        <Form.Group className="mb-4">
+
+          <Form.Label>
+
+            Password
+
+          </Form.Label>
+
+          <InputGroup>
+
+            <Form.Control
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) =>
+                setPassword(
+                  e.target.value
+                )
+              }
+              required
+            />
+
+            <Button
+              variant="outline-light"
+              type="button"
+              onClick={() =>
+                setShowPassword(
+                  !showPassword
+                )
+              }
+            >
+
+              <i
+                className={
+                  showPassword
+                    ? "bi bi-eye-slash"
+                    : "bi bi-eye"
+                }
+              />
+
+            </Button>
+
+          </InputGroup>
+
+        </Form.Group>
+
+        <div className="d-grid">
+
+          <Button
+            className="login-btn"
+            type="submit"
+            disabled={loading}
+          >
+
+            {
+
+              loading ?
+
+              <>
+
+                <Spinner
+                  animation="border"
+                  size="sm"
+                  className="me-2"
+                />
+
+                Logging In...
+
+              </>
+
+              :
+
+              "Login"
+
+            }
+
+          </Button>
+
+        </div>
+
+        <div className="login-footer">
+
+          Together Towards a Better NIT Durgapur
+
+        </div>
+
+      </Form>
+
+    </AuthLayout>
+
   );
+
 }
 
 export default Login;

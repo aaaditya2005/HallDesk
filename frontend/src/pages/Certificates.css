@@ -1,0 +1,108 @@
+.certificate-card {
+  border-left: 4px solid #003366;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.certificate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.15);
+}
+
+.certificate-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.certificate-status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.certificate-status.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.certificate-status.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  z-index: 1050;
+}
+
+.request-form {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+  border-color: #ddd;
+  border-radius: 6px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #003366;
+  box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+}
+
+.btn-primary {
+  background-color: #102A43;
+  border-color: #102A43;
+}
+
+.btn-primary:hover {
+  background-color: #0d1f30;
+  border-color: #0d1f30;
+}
+
+.primary-action-btn {
+  background-color: #102A43;
+  border-color: #102A43;
+  color: #fff;
+  font-weight: 700;
+}
+
+.primary-action-btn:hover,
+.primary-action-btn:focus,
+.primary-action-btn:active {
+  background-color: #0d1f30;
+  border-color: #0d1f30;
+  color: #fff;
+}
+
+.secondary-action-btn {
+  background: #ffffff;
+  border: 1px solid #d1d9e4;
+  color: #102A43;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.secondary-action-btn:hover,
+.secondary-action-btn:focus,
+.secondary-action-btn:active {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #102A43;
+  box-shadow: none;
+}

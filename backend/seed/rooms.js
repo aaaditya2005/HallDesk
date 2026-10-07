@@ -2,111 +2,47 @@ const generateRooms = (halls) => {
 
   const rooms = [];
 
-  const getHallId = (hallNumber) =>
-    halls.find(
-      (hall) => hall.hallNumber === hallNumber
-    )._id;
+  const getHallId = (hallNumber) => {
+    const found = halls.find((hall) => hall.hallNumber === hallNumber);
+    return found ? (found.id || found._id) : null;
+  };
 
-  // Hall 1
-  ["South", "Mid"].forEach((block) => {
-    [1, 2].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
+  const addBlockRooms = (hallNumber, block, floors, firstRoom, lastRoom, prefix = "", visibleFloorOffset = 1) => {
+    floors.forEach((floor) => {
+      for (let room = firstRoom; room <= lastRoom; room++) {
         rooms.push({
-          hallId: getHallId(1),
+          hallId: getHallId(hallNumber),
           block,
           floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
+          roomNumber: `${prefix}${(floor + visibleFloorOffset) * 100 + room}`,
+          capacity: 3,
         });
       }
     });
+  };
+
+  // Halls 1 and 2: South and Central have ground + 2 floors; Extension has ground + 3.
+  [1, 2].forEach((hallNumber) => {
+    addBlockRooms(hallNumber, "South", [0, 1, 2], 1, 16, "SB");
+    addBlockRooms(hallNumber, "Central", [0, 1, 2], 1, 16, "CB");
+    addBlockRooms(hallNumber, "Extension", [0, 1, 2, 3], 1, 16, "EXT");
   });
 
-  ["Extension"].forEach((block) => {
-    [1, 2, 3, 4].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
-        rooms.push({
-          hallId: getHallId(1),
-          block,
-          floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
-        });
-      }
-    });
-  });
+  // Hall 3 has the South and Central blocks only, with the Hall 2 layout.
+  addBlockRooms(3, "South", [0, 1, 2], 1, 16, "SB");
+  addBlockRooms(3, "Central", [0, 1, 2], 1, 16, "CB");
 
-  // Hall 2
-  ["South", "Mid"].forEach((block) => {
-    [1, 2].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
-        rooms.push({
-          hallId: getHallId(2),
-          block,
-          floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
-        });
-      }
-    });
-  });
+  // Hall 9: one main building, ground + 3 floors, rooms 101-140 per floor.
+  addBlockRooms(9, "Main", [0, 1, 2, 3], 1, 40);
 
-  ["Extension"].forEach((block) => {
-    [1, 2, 3, 4].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
-        rooms.push({
-          hallId: getHallId(2),
-          block,
-          floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
-        });
-      }
-    });
-  });
+  // Hall 11: ground + 5 floors, rooms 101-140 per floor.
+  addBlockRooms(11, "Main", [0, 1, 2, 3, 4, 5], 1, 40);
 
-  // Hall 3
-  ["South", "Mess"].forEach((block) => {
-    [1, 2, 3, 4].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
-        rooms.push({
-          hallId: getHallId(3),
-          block,
-          floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
-        });
-      }
-    });
-  });
+  // Hall 13: ground floor is the mess; twelve upper floors have rooms 101-125 to 1201-1225.
+  addBlockRooms(13, "Main", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 1, 25, "", 0);
 
-  // Hall 4 - Hall 13
-  for (let hall = 4; hall <= 13; hall++) {
-    [1, 2, 3, 4].forEach((floor) => {
-      for (let room = 1; room <= 40; room++) {
-        rooms.push({
-          hallId: getHallId(hall),
-          block: "Main",
-          floor,
-          roomNumber: `${floor * 100 + room}`,
-          capacity: 2,
-        });
-      }
-    });
-  }
-
-  // Hall 14
-  for (let floor = 1; floor <= 12; floor++) {
-    for (let room = 1; room <= 40; room++) {
-      rooms.push({
-        hallId: getHallId(14),
-        block: "Main",
-        floor,
-        roomNumber: `${floor * 100 + room}`,
-        capacity: 2,
-      });
-    }
-  }
+  // Hall 14: no ground-floor rooms, then eight floors with rooms 101-138 to 801-838.
+  addBlockRooms(14, "Main", [1, 2, 3, 4, 5, 6, 7, 8], 1, 38, "", 0);
 
   return rooms;
 };

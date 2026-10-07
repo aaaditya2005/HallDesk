@@ -3,6 +3,8 @@ node_modules/
 
 # Environment variables (Crucial for security!)
 .env
+.env.*
+!.env.example
 
 # Logs and Debugging
 npm-debug.log*
@@ -12,3 +14,15 @@ yarn-error.log*
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Runtime and build output
+*.log
+coverage/
+dist/
+
+# Local uploads; keep the directory available in a fresh checkout
+uploads/*
+!uploads/.gitkeep
+
+# Keep the shareable environment template
+!.env.example

@@ -1,0 +1,175 @@
+/* ==========================================
+   LOGIN HEADING
+========================================== */
+
+.login-heading{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.login-heading h4{
+
+    color:#ffffff;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.login-heading p{
+
+    color:#d9d9d9;
+
+    font-size:14px;
+
+    margin:0;
+
+}
+
+
+/* ==========================================
+   LABELS
+========================================== */
+
+.form-label{
+
+    color:#ffffff !important;
+
+    font-weight:600 !important;
+
+    margin-bottom:8px;
+
+}
+
+
+/* ==========================================
+   INPUTS
+========================================== */
+
+.form-control{
+
+    height:48px !important;
+
+    border-radius:6px !important;
+
+    border:1px solid #ced4da !important;
+
+    box-shadow:none !important;
+
+    font-size:15px;
+
+}
+
+.form-control:focus{
+
+    border-color:#ffffff !important;
+
+    box-shadow:0 0 0 0.2rem rgba(255,255,255,.15) !important;
+
+}
+
+
+/* ==========================================
+   PASSWORD BUTTON
+========================================== */
+
+.input-group .btn{
+
+    border:1px solid #ced4da !important;
+
+    background:#ffffff !important;
+
+    color:#243B53 !important;
+
+    border-left:none !important;
+
+}
+
+.input-group .btn:hover{
+
+    background:#f2f2f2 !important;
+
+}
+
+
+/* ==========================================
+   LOGIN BUTTON
+========================================== */
+
+.login-btn{
+
+    width:100% !important;
+
+    height:48px !important;
+
+    background:#ffffff !important;
+
+    color:#243B53 !important;
+
+    border:none !important;
+
+    font-weight:700 !important;
+
+    border-radius:6px !important;
+
+    transition:.25s;
+
+}
+
+.login-btn:hover{
+
+    background:#ececec !important;
+
+    color:#243B53 !important;
+
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.login-footer{
+
+    margin-top:28px;
+
+    text-align:center;
+
+    color:#d6d6d6;
+
+    font-size:13px;
+
+    font-style:italic;
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:768px){
+
+    .login-heading{
+
+        margin-bottom:24px;
+
+    }
+
+    .login-heading h4{
+
+        font-size:24px;
+
+    }
+
+    .login-footer{
+
+        font-size:12px;
+
+    }
+
+}

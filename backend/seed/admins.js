@@ -3,10 +3,7 @@ const admins = [
     name: "HallDesk Super Admin",
     username: "admin",
     email: "admin@halldesk.com",
-    password: "admin123",
-
     registrationNo: undefined,
-    rollNo: undefined,
     course: undefined,
     department: undefined,
     currentYear: undefined,

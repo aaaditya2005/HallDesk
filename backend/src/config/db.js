@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
+import prisma from "./prisma.js";
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not configured.");
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await prisma.$connect();
+    console.log("PostgreSQL Connected securely via Prisma Client.");
+    return prisma;
   } catch (error) {
     console.error("Database Connection Failed:", error.message);
     process.exit(1);

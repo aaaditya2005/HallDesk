@@ -1,88 +1,222 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../services/api";
+import { useEffect, useState } from "react";
+
+import StatCard from "../components/Dashboard/StatCard";
+import { getStudentDashboard } from "../services/dashboardService";
+import { connectSocket, disconnectSocket } from "../services/socket";
+import "./Dashboard.css";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token =
-          localStorage.getItem("token");
+    const user =
+        JSON.parse(localStorage.getItem("user"));
 
-        const res = await api.get(
-          "/auth/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    const [dashboardData, setDashboardData] = useState({ openIssues: 0, pendingCertificates: 0, activePolls: 0, pendingFines: 0, notices: [], recentActivity: [] });
+    const notices = dashboardData.notices;
 
-        setUser(res.data.user);
-      } catch (error) {
-        console.error(error);
-      }
+    const stats = [
+        { title: "Open Issues", value: dashboardData.openIssues, icon: "bi-exclamation-circle", color: "blue" },
+        { title: "Pending Certificates", value: dashboardData.pendingCertificates, icon: "bi-file-earmark-text", color: "green" },
+        { title: "Active Polls", value: dashboardData.activePolls, icon: "bi-bar-chart", color: "orange" },
+        { title: "Pending Fines", value: dashboardData.pendingFines, icon: "bi-cash-stack", color: "red" },
+    ];
+
+    const fetchDashboard = async () => {
+        try {
+            const res = await getStudentDashboard();
+            setDashboardData(res.data.data || {});
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    fetchUser();
-  }, []);
+    useEffect(() => {
+        void Promise.resolve().then(fetchDashboard);
 
-  if (!user) {
-    return <h2>Loading...</h2>;
-  }
+        const hallId = user?.hallId?._id || user?.hallId;
+        const socket = connectSocket(hallId);
 
-  return (
-    <div>
-      <h1>HallDesk Dashboard</h1>
+        if (socket) {
+            socket.on("notice-created", (notice) => {
+                setDashboardData((prev) => ({ ...prev, notices: [notice, ...prev.notices].slice(0, 3) }));
+            });
 
-      <Link to="/issues">
-        My Issues
-      </Link>
+            socket.on("notice-updated", (notice) => {
+                setDashboardData((prev) => ({ ...prev, notices: prev.notices.map((item) => (item._id === notice._id ? notice : item)) }));
+            });
 
-      <br />
-      <br />
+            socket.on("notice-deleted", ({ noticeId }) => {
+                setDashboardData((prev) => ({ ...prev, notices: prev.notices.filter((item) => item._id !== noticeId) }));
+            });
+        }
 
-      <Link to="/create-issue">
-        Raise New Issue
-      </Link>
+        return () => {
+            if (socket) {
+                socket.off("notice-created");
+                socket.off("notice-updated");
+                socket.off("notice-deleted");
+            }
+            disconnectSocket();
+        };
+    }, [user?.hallId?._id, user?.hallId]);
 
-      <hr />
+    const activities = dashboardData.recentActivity;
 
-      <h3>Name: {user.name}</h3>
+    return (
 
-      <h3>
-        Username: {user.username}
-      </h3>
+        <div className="dashboard-page">
 
-      <h3>Role: {user.role}</h3>
+            <div className="dashboard-header">
 
-      <h3>
-        Registration No: {user.registrationNo}
-      </h3>
+                <div>
 
-      <h3>
-        Roll No: {user.rollNo}
-      </h3>
+                    <h2>
 
-      <h3>
-        Department: {user.department}
-      </h3>
+                        Good Morning, {user?.name}
 
-      <h3>
-        Current Year: {user.currentYear}
-      </h3>
+                    </h2>
 
-      <h3>
-        Phone: {user.phone}
-      </h3>
+                    <p>
 
-      <h3>
-        Parent Phone: {user.parentPhone}
-      </h3>
-    </div>
-  );
+                        Welcome back to HallDesk.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div className="stats-grid">
+
+                {stats.map((item, index) => (
+
+                    <StatCard
+                        key={index}
+                        {...item}
+                    />
+
+                ))}
+
+            </div>
+
+            <div className="dashboard-grid">
+
+                <div className="dashboard-card">
+
+                    <h4>
+
+                        Quick Actions
+
+                    </h4>
+
+                    <div className="action-buttons">
+
+                        <Link
+                            to="/student/create-issue"
+                            className="btn btn-primary"
+                        >
+
+                            Report Issue
+
+                        </Link>
+
+                        <Link
+                            to="/student/certificates"
+                            className="btn btn-success"
+                        >
+
+                            Apply Certificate
+
+                        </Link>
+
+                        <Link
+                            to="/student/mess"
+                            className="btn btn-warning"
+                        >
+
+                            Mess Menu
+
+                        </Link>
+
+                        <Link
+                            to="/student/polls"
+                            className="btn btn-info"
+                        >
+
+                            Vote Poll
+
+                        </Link>
+
+                    </div>
+
+                </div>
+
+                <div className="dashboard-card">
+
+                    <h4>
+
+                        Latest Notices
+
+                    </h4>
+
+                    <div className="notices-list-dashboard">
+                        {notices.slice(0, 3).map((notice) => (
+                            <div key={notice._id} className="notice-item-dashboard">
+                                <div className="notice-item-header">
+                                    <span className={`status-badge ${notice.status === "Active" ? "active" : notice.status === "Expired" ? "expired" : "deleted"}`}>
+                                        {notice.status}
+                                    </span>
+                                    <span className="notice-date">{new Date(notice.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <h5>{notice.title}</h5>
+                                <p className="notice-description-dashboard">{notice.description.substring(0, 80)}...</p>
+                                {notice.attachment && (
+                                    <div className="attachment-indicator">📎 Attachment</div>
+                                )}
+                            </div>
+                        ))}
+                        {notices.length === 0 && (
+                            <div className="no-notices-dashboard">
+                                <p>No notices yet</p>
+                            </div>
+                        )}
+                    </div>
+                    <Link to="/student/notices" className="view-all-link">
+                        View All Notices →
+                    </Link>
+
+                </div>
+
+            </div>
+
+            <div className="dashboard-card">
+
+                <h4>
+
+                    Recent Activity
+
+                </h4>
+
+                <ul>
+
+                    {activities.map((activity, index) => (
+
+                        <li key={index}>
+
+                            ✅ {activity}
+
+                        </li>
+
+                    ))}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    );
+
 }
 
 export default Dashboard;

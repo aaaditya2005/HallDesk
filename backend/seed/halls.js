@@ -4,13 +4,13 @@ const halls = [
     hallName: "Netaji Subhas Chandra Bose Hall",
     shortName: "NSCB Hall",
     gender: "Male",
-    totalFloors: 4,
-    blocks: ["South", "Mid", "Extension"],
+    totalFloors: 3,
+    blocks: ["South", "Central", "Extension"],
     capacity: 480,
     occupiedRooms: 0,
     availableRooms: 480,
     description:
-      "Boys hostel with South, Mid and Extension blocks.",
+      "Boys hostel with South, Central and Extension blocks.",
   },
 
   {
@@ -18,13 +18,13 @@ const halls = [
     hallName: "Jagadish Chandra Bose Hall",
     shortName: "JCB Hall",
     gender: "Male",
-    totalFloors: 4,
-    blocks: ["South", "Mid", "Extension"],
+    totalFloors: 3,
+    blocks: ["South", "Central", "Extension"],
     capacity: 480,
     occupiedRooms: 0,
     availableRooms: 480,
     description:
-      "Boys hostel with South, Mid and Extension blocks.",
+      "Boys hostel with South, Central and Extension blocks.",
   },
 
   {
@@ -32,13 +32,13 @@ const halls = [
     hallName: "Rabindra Nath Tagore Hall",
     shortName: "RNT Hall",
     gender: "Male",
-    totalFloors: 4,
-    blocks: ["South", "Mess"],
-    capacity: 320,
+    totalFloors: 3,
+    blocks: ["South", "Central"],
+    capacity: 288,
     occupiedRooms: 0,
-    availableRooms: 320,
+    availableRooms: 288,
     description:
-      "Boys hostel with South Block and Mess Block.",
+      "Boys hostel with South and Central blocks.",
   },
 
   {
@@ -48,7 +48,7 @@ const halls = [
     gender: "Male",
     totalFloors: 4,
     blocks: [],
-    capacity: 320,
+    capacity: 480,
     occupiedRooms: 0,
     availableRooms: 320,
     description:
@@ -60,9 +60,9 @@ const halls = [
     hallName: "Swami Vivekananda Hall",
     shortName: "SV Hall",
     gender: "Male",
-    totalFloors: 4,
+    totalFloors: 6,
     blocks: [],
-    capacity: 320,
+    capacity: 594,
     occupiedRooms: 0,
     availableRooms: 320,
     description:
@@ -118,9 +118,9 @@ const halls = [
     gender: "Male",
     totalFloors: 4,
     blocks: [],
-    capacity: 320,
+    capacity: 480,
     occupiedRooms: 0,
-    availableRooms: 320,
+    availableRooms: 480,
     description:
       "Boys hostel.",
   },
@@ -144,13 +144,13 @@ const halls = [
     hallName: "Meghnad Saha Hall",
     shortName: "MS Hall",
     gender: "Male",
-    totalFloors: 4,
+    totalFloors: 6,
     blocks: [],
-    capacity: 320,
+    capacity: 720,
     occupiedRooms: 0,
-    availableRooms: 320,
+    availableRooms: 720,
     description:
-      "Boys hostel.",
+      "Boys hostel with ground floor plus five room floors.",
   },
 
   {
@@ -172,13 +172,13 @@ const halls = [
     hallName: "Sarojini Naidu Hall",
     shortName: "SN Hall",
     gender: "Female",
-    totalFloors: 4,
+    totalFloors: 13,
     blocks: [],
-    capacity: 240,
+    capacity: 900,
     occupiedRooms: 0,
-    availableRooms: 240,
+    availableRooms: 900,
     description:
-      "Girls hostel.",
+      "Girls hostel with a ground-floor mess and twelve room floors.",
   },
 
   {
@@ -186,13 +186,13 @@ const halls = [
     hallName: "Dr. B.R. Ambedkar Hall",
     shortName: "BRA Hall",
     gender: "Male",
-    totalFloors: 12,
+    totalFloors: 8,
     blocks: [],
-    capacity: 480,
+    capacity: 912,
     occupiedRooms: 0,
-    availableRooms: 480,
+    availableRooms: 912,
     description:
-      "12-floor boys hostel for B.Tech, M.Tech and PhD students.",
+      "Eight-floor boys hostel with no rooms on the ground floor.",
   },
 ];
 

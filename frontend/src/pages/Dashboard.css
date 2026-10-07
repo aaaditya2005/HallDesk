@@ -1,0 +1,192 @@
+.dashboard-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+.dashboard-header h2{
+
+    font-weight:700;
+
+    color:#102A43;
+
+}
+
+.dashboard-header p{
+
+    color:#64748B;
+
+}
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+
+    gap:20px;
+
+}
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:20px;
+
+}
+
+.dashboard-card{
+
+    background:#fff;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+
+}
+
+.dashboard-card h4{
+
+    margin-bottom:20px;
+
+    color:#102A43;
+
+}
+
+.dashboard-card ul{
+
+    padding-left:18px;
+
+    margin:0;
+
+}
+
+.dashboard-card li{
+
+    margin-bottom:12px;
+
+}
+
+.action-buttons{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+
+}
+
+.action-buttons .btn{
+
+    padding:12px;
+
+}
+
+@media(max-width:992px){
+
+.dashboard-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.action-buttons{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+.notices-list-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.notice-item-dashboard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notice-item-dashboard:hover {
+  border-color: #102A43;
+  background: #f0f9ff;
+}
+
+.notice-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.notice-item-dashboard h5 {
+  margin: 0 0 6px 0;
+  color: #102A43;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notice-description-dashboard {
+  margin: 0 0 8px 0;
+  color: #64748B;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.attachment-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #102A43;
+  background: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.notice-date {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.no-notices-dashboard {
+  text-align: center;
+  padding: 20px;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+
+.view-all-link {
+  display: inline-block;
+  color: #102A43;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.view-all-link:hover {
+  color: #0d1f30;
+}

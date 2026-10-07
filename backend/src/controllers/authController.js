@@ -1,5 +1,6 @@
-import User from "../models/User.js";
+import prisma from "../config/prisma.js";
 import generateToken from "../utils/generateToken.js";
+import { hashPassword, matchPassword } from "../utils/authUtils.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -8,32 +9,22 @@ export const registerUser = async (req, res) => {
       username,
       password,
       role,
-
-      hallId,
-      roomId,
-
       registrationNo,
-      rollNo,
-
       department,
+      branch,
       course,
       currentYear,
-
       phone,
       parentPhone,
       gender,
-
-      designation,
-      officePhone,
-
-      companyName,
-      managerId,
-
-      adminLevel,
     } = req.body;
 
-    const existingUser = await User.findOne({
-      username,
+    if (role !== "student") {
+      return res.status(403).json({ success: false, message: "Only student accounts can be registered publicly." });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { username },
     });
 
     if (existingUser) {
@@ -43,55 +34,42 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    const user = await User.create({
+    const hashedPassword = await hashPassword(password);
+
+    const user = await prisma.user.create({
+      data: {
         name,
         username,
-        password,
-        role,
-
-        hallId,
-        roomId,
-
+        password: hashedPassword,
+        role: "student",
         registrationNo,
-        rollNo,
-
         department,
+        branch,
         course,
-        currentYear,
-
+        currentYear: currentYear ? Number(currentYear) : null,
         phone,
         parentPhone,
         gender,
-
-        designation,
-        officePhone,
-
-        companyName,
-        managerId,
-
-        adminLevel,
+      },
     });
 
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-
       user: {
-        id: user._id,
+        id: user.id,
+        _id: user.id,
         name: user.name,
         username: user.username,
         role: user.role,
-
         registrationNo: user.registrationNo,
-        rollNo: user.rollNo,
-
         department: user.department,
+        branch: user.branch,
         currentYear: user.currentYear,
       },
     });
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -103,8 +81,9 @@ export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ username });
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (!user) {
       return res.status(401).json({
@@ -113,10 +92,11 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Compare password
-    // Compare password
-    const isMatch =
-        await user.matchPassword(password);
+    if (!user.isActive) {
+      return res.status(403).json({ success: false, message: "This account is inactive." });
+    }
+
+    const isMatch = await matchPassword(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -125,28 +105,31 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() },
+    });
 
-    // Generate token
-    const token = generateToken(user._id);
+    const token = generateToken(user.id);
 
     res.status(200).json({
       success: true,
       token,
-
       user: {
-        id: user._id,
+        id: user.id,
+        _id: user.id,
         name: user.name,
         username: user.username,
         role: user.role,
         hallId: user.hallId,
+        roomId: user.roomId,
+        registrationNo: user.registrationNo,
+        rollNo: user.rollNo,
+        branch: user.branch,
       },
     });
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -158,7 +141,10 @@ export const getMe = async (req, res) => {
   try {
     res.status(200).json({
       success: true,
-      user: req.user,
+      user: {
+        ...req.user,
+        _id: req.user.id,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -167,4 +153,3 @@ export const getMe = async (req, res) => {
     });
   }
 };
-

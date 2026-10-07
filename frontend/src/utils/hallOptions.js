@@ -1,0 +1,16 @@
+export const allHallOptions = [
+  [1, "Netaji Subhas Chandra Bose Hall"],
+  [2, "Jagadish Chandra Bose Hall"],
+  [3, "Rabindra Nath Tagore Hall"],
+  [4, "C V Raman Hall"],
+  [5, "Swami Vivekananda Hall"],
+  [6, "Rishi Aurobindo Hall"],
+  [7, "Sister Nivedita Hall"],
+  [8, "Preetilata Waddader Hall"],
+  [9, "Satyendra Nath Bose Hall"],
+  [10, "Mother Teresa Hall"],
+  [11, "Meghnad Saha Hall"],
+  [12, "A.P.J. Abdul Kalam International Hostel"],
+  [13, "Sarojini Naidu Hall"],
+  [14, "Dr. B.R. Ambedkar Hall"],
+];

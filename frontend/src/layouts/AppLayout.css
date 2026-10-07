@@ -1,0 +1,131 @@
+/* ===========================
+   APP LAYOUT
+=========================== */
+
+.app-layout{
+
+    display:flex;
+
+    min-height:100vh;
+
+    min-width:0;
+
+    background:#F4F7FB;
+
+}
+
+
+/* ===========================
+   MAIN CONTENT
+=========================== */
+
+.main-section{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-width:0;
+
+}
+
+
+/* ===========================
+   PAGE CONTENT
+=========================== */
+
+.page-content{
+
+    flex:1;
+
+    padding:28px;
+
+    overflow-y:auto;
+
+}
+
+
+/* ===========================
+   PAGE TITLE
+=========================== */
+
+.page-title{
+
+    color:#243B53;
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .app-layout-role-student .page-content{
+
+        padding:20px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .app-layout-role-student{
+
+        flex-direction:row;
+
+    }
+
+    .app-layout-role-student .page-content{
+
+        padding:15px;
+
+    }
+
+    .app-layout-role-admin,
+    .app-layout-role-warden{
+
+        min-width:1200px;
+
+    }
+
+    .app-layout-role-student .page-content{
+
+        overflow-x:hidden;
+
+    }
+
+    .app-layout-role-student img,
+    .app-layout-role-student video,
+    .app-layout-role-student iframe{
+
+        max-width:100%;
+
+    }
+
+    .app-layout-role-student table{
+
+        max-width:100%;
+
+    }
+
+}
+
+@media(min-width:769px){
+
+    .app-layout-role-admin,
+    .app-layout-role-warden{
+
+        min-width:1200px;
+
+    }
+
+}

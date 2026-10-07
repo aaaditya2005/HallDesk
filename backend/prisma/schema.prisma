@@ -1,0 +1,387 @@
+// Prisma Schema for HallDesk Backend Database (Supabase PostgreSQL)
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  student
+  warden
+  mess_manager
+  admin
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+model User {
+  id             String    @id @default(uuid())
+  name           String
+  username       String    @unique
+  email          String?
+  password       String
+  phone          String?
+  role           Role
+  hallId         String?
+  hall           Hall?     @relation("UserHall", fields: [hallId], references: [id])
+  isActive       Boolean   @default(true)
+  profilePhoto   String?
+  lastLogin      DateTime?
+  registrationNo String?   @unique
+  rollNo         String?   @unique
+  department     String?
+  branch         String?
+  course         String?
+  currentYear    Int?
+  roomId         String?
+  room           Room?     @relation("UserRoom", fields: [roomId], references: [id])
+  parentPhone    String?
+  gender         Gender?
+
+  // Warden specific fields
+  designation    String?
+  officePhone    String?
+
+  // Mess Manager specific fields
+  companyName    String?
+  managerId      String?
+
+  // Admin specific fields
+  adminLevel     Int?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relationships
+  wardenHalls                HallWarden[]
+  managedHalls               Hall[]                       @relation("ManagedHall")
+  reportedIssues             Issue[]                      @relation("ReportedIssues")
+  assignedIssues             Issue[]                      @relation("AssignedIssues")
+  resolvedIssues             Issue[]                      @relation("ResolvedIssues")
+  issueTimelineActions       IssueTimeline[]
+  supportedIssues            IssueSupporter[]
+  studentCertificates        Certificate[]                @relation("StudentCertificates")
+  approvedCertificates       Certificate[]                @relation("ApprovedCertificates")
+  studentFines               Fine[]                       @relation("StudentFines")
+  issuedFines                Fine[]                       @relation("IssuedFines")
+  createdDailyMenus          DailyMenu[]
+  createdMessExpenses        MessExpense[]
+  createdNotices             Notice[]
+  createdPolls               Poll[]
+  votes                      Vote[]
+  auditLogs                  AuditLog[]
+  studentResidenceHistories  ResidenceHistory[]           @relation("StudentResidenceHistory")
+  assignedResidenceHistories ResidenceHistory[]           @relation("AssignedResidenceHistory")
+}
+
+model Hall {
+  id             String   @id @default(uuid())
+  hallNumber     Int      @unique
+  hallName       String
+  gender         Gender
+  totalFloors    Int
+  blocks         String[]
+  capacity       Int
+  occupiedRooms  Int      @default(0)
+  availableRooms Int      @default(0)
+  description    String   @default("")
+
+  messManagerId  String?
+  messManager    User?    @relation("ManagedHall", fields: [messManagerId], references: [id])
+
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relationships
+  wardens            HallWarden[]
+  users              User[]             @relation("UserHall")
+  rooms              Room[]
+  issues             Issue[]
+  certificates       Certificate[]
+  fines              Fine[]
+  dailyMenus         DailyMenu[]
+  messExpenses       MessExpense[]
+  notices            Notice[]
+  polls              Poll[]
+  residenceHistories ResidenceHistory[]
+}
+
+model HallWarden {
+  hallId   String
+  hall     Hall   @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  wardenId String
+  warden   User   @relation(fields: [wardenId], references: [id], onDelete: Cascade)
+
+  @@id([hallId, wardenId])
+}
+
+model Room {
+  id         String   @id @default(uuid())
+  hallId     String
+  hall       Hall     @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  block      String
+  floor      Int
+  roomNumber String
+  capacity   Int
+  status     String   @default("Available")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  occupants          User[]             @relation("UserRoom")
+  issues             Issue[]
+  residenceHistories ResidenceHistory[]
+
+  @@unique([hallId, block, roomNumber])
+}
+
+model Issue {
+  id                     String    @id @default(uuid())
+  issueNumber            String    @unique
+  title                  String
+  description            String
+  category               String
+  status                 String    @default("Pending")
+  attachments            String[]
+  attachmentPublicId     String[]
+  attachmentOriginalName String[]
+
+  reportedById           String
+  reportedBy             User      @relation("ReportedIssues", fields: [reportedById], references: [id])
+
+  hallId                 String
+  hall                   Hall      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+
+  roomId                 String?
+  room                   Room?     @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  assignedToId           String?
+  assignedTo             User?     @relation("AssignedIssues", fields: [assignedToId], references: [id])
+
+  resolvedById           String?
+  resolvedBy             User?     @relation("ResolvedIssues", fields: [resolvedById], references: [id])
+
+  lastUpdatedAt          DateTime  @default(now())
+  resolvedAt             DateTime?
+  rejectionReason        String?
+  feedback               String?
+  rating                 Int?
+  isActive               Boolean   @default(true)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  // Relationships
+  supporters IssueSupporter[]
+  timeline   IssueTimeline[]
+}
+
+model IssueTimeline {
+  id        String   @id @default(uuid())
+  issueId   String
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  action    String
+  remark    String   @default("")
+  byId      String?
+  by        User?    @relation(fields: [byId], references: [id])
+  timestamp DateTime @default(now())
+}
+
+model IssueSupporter {
+  issueId String
+  issue   Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([issueId, userId])
+}
+
+model Certificate {
+  id                               String    @id @default(uuid())
+  certificateRequestNumber         String    @unique
+  certificateType                  String
+  studentId                        String
+  student                          User      @relation("StudentCertificates", fields: [studentId], references: [id], onDelete: Cascade)
+  hallId                           String
+  hall                             Hall      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  leaveFromDate                    DateTime?
+  leaveToDate                      DateTime?
+  parentPhone                      String?
+  reason                           String?
+  purpose                          String?
+  status                           String    @default("Pending")
+  approvedById                     String?
+  approvedBy                       User?     @relation("ApprovedCertificates", fields: [approvedById], references: [id])
+  approvedAt                       DateTime?
+  rejectionReason                  String?
+  certificatePdfUrl                String?
+  certificatePdfDataUri            String?
+  certificatePdfFirstDownloadedAt DateTime?
+  certificatePdfExpiresAt          DateTime?
+  certificatePdfDeletedAt          DateTime?
+  digitalSignatureUrl              String?
+  stampUrl                         String?
+  remarks                          String?
+  isActive                         Boolean   @default(true)
+  createdAt                        DateTime  @default(now())
+  updatedAt                        DateTime  @updatedAt
+}
+
+model Fine {
+  id                   String    @id @default(uuid())
+  fineNumber           String    @unique
+  studentId            String
+  student              User      @relation("StudentFines", fields: [studentId], references: [id], onDelete: Cascade)
+  hallId               String
+  hall                 Hall      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  amount               Float
+  reason               String?
+  description          String?
+  paymentProcedure     String    @default("Both")
+  paymentDeadline      DateTime?
+  issuedById           String
+  issuedBy             User      @relation("IssuedFines", fields: [issuedById], references: [id])
+  status               String    @default("Pending")
+  issuedAt             DateTime  @default(now())
+  paidAt               DateTime?
+  paymentProofUrl      String?
+  paymentProofFileName String?
+  remarks              String?
+  isActive             Boolean   @default(true)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model DailyMenu {
+  id          String   @id @default(uuid())
+  hallId      String
+  hall        Hall     @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  menuDate    DateTime
+  breakfast   String[]
+  lunch       String[]
+  dinner      String[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([hallId, menuDate])
+}
+
+model MessExpense {
+  id          String   @id @default(uuid())
+  hallId      String
+  hall        Hall     @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  expenseDate DateTime
+  title       String
+  description String?
+  amount      Float
+  category    String
+  attachments String[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notice {
+  id                 String    @id @default(uuid())
+  noticeNumber       String    @unique
+  title              String
+  description        String
+  createdById        String
+  createdBy          User      @relation(fields: [createdById], references: [id])
+  hallId             String
+  hall               Hall      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  attachment         String[]  @default([])
+  attachmentUrl      String[]  @default([])
+  attachmentPublicId String[]  @default([])
+  isActive           Boolean   @default(true)
+  expiresAt          DateTime?
+  status             String    @default("Active")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Poll {
+  id          String       @id @default(uuid())
+  pollNumber  String       @unique
+  title       String
+  description String
+  createdById String
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  hallId      String
+  hall        Hall         @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  startDate   DateTime
+  endDate     DateTime
+  status      String       @default("Upcoming")
+  totalVotes  Int          @default(0)
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+
+  options     PollOption[]
+  votes       Vote[]
+}
+
+model PollOption {
+  id         String @id @default(uuid())
+  pollId     String
+  poll       Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionText String
+  voteCount  Int    @default(0)
+}
+
+model Vote {
+  id             String   @id @default(uuid())
+  pollId         String
+  poll           Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  studentId      String
+  student        User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  selectedOption String?
+  selectedIndex  Int?
+  votedAt        DateTime @default(now())
+
+  @@unique([pollId, studentId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String
+  actor     User     @relation(fields: [actorId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResidenceHistory {
+  id           String    @id @default(uuid())
+  studentId    String
+  student      User      @relation("StudentResidenceHistory", fields: [studentId], references: [id], onDelete: Cascade)
+  hallId       String
+  hall         Hall      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  roomId       String?
+  room         Room?     @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  academicYear Int?
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  status       String    @default("Pending")
+  assignedById String?
+  assignedBy   User?     @relation("AssignedResidenceHistory", fields: [assignedById], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
